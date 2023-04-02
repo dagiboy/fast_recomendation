@@ -108,15 +108,15 @@ def compute_top_k(item_to_users:dict[int, set[int]], user_to_items: dict[int, se
                 if item2 in processed_items:
                     continue
 
-            processed_items.add(item2)
-            sim = get_sim(item1, item2, item_to_users)
+                processed_items.add(item2)
+                sim = get_sim(item1, item2, item_to_users)
 
-            if sim <= cur_min:
-                continue
+                if sim <= cur_min:
+                    continue
 
-            top_sim[cur_arg] = sim
-            top_items[cur_arg] = item2
-            cur_arg, cur_min = arg_min(top_sim)
+                top_sim[cur_arg] = sim
+                top_items[cur_arg] = item2
+                cur_arg, cur_min = arg_min(top_sim)
 
         top_k[item1] = set(top_items)
 
