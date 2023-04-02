@@ -28,9 +28,11 @@ def read_item_user_info(file_name: str):
     item_to_users = defaultdict(list)
     user_to_items = defaultdict(list)
 
+    count = 0
+    MAX = 1_000_000
 
     with open(file_name) as f:
-        for row in tqdm(f, total=1671803, desc='Read data'):
+        for row in f:
             j = json.loads(row)
             session = j['session']
 
@@ -38,6 +40,10 @@ def read_item_user_info(file_name: str):
                 item = event['aid']
                 item_to_users[item].append(session)
                 user_to_items[session].append(item)
+
+            count += 1
+            if count > MAX:
+                break
 
     return dict(item_to_users), dict(user_to_items)
 
@@ -120,6 +126,8 @@ def compute_top_k(item_to_users:dict[int, set[int]], user_to_items: dict[int, se
 
         top_k[item1] = set(top_items)
 
+    return top_k
+
 def to_pickle(obj, file_name: str):
     with open(file_name, 'wb') as f:
         pickle.dump(obj, f)
@@ -134,9 +142,9 @@ def main():
     populest = get_populest(item_to_users, K)
     top_k = compute_top_k(item_to_users, user_to_items, populest, K)
 
-    to_pickle(item_to_users, "item_to_users_inf.pkl")
-    to_pickle(user_to_items, "user_to_items_inf.pkl")
-    to_pickle(top_k, "top_k_info.pkl")
+    to_pickle(item_to_users, "data/item_to_users_inf.pkl")
+    to_pickle(user_to_items, "data/user_to_items_inf.pkl")
+    to_pickle(top_k, "data/top_k_info.pkl")
 
 if __name__ == "__main__":
     main()   
