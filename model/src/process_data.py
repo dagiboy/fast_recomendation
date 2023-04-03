@@ -4,6 +4,9 @@ from collections import defaultdict
 import pickle
 
 K = 10
+TOP_K_FILE_NAME = "data/top_k_info.pkl"
+USER_TO_ITEMS_FILE_NAME = "data/user_to_items_inf.pkl"
+ITEM_TO_USERS_FILE_NAME = "data/item_to_users_inf.pkl"
 
 def arg_min(l):
     cur_min = l[0]
@@ -142,9 +145,9 @@ def main():
     populest = get_populest(item_to_users, K)
     top_k = compute_top_k(item_to_users, user_to_items, populest, K)
 
-    to_pickle(item_to_users, "data/item_to_users_inf.pkl")
-    to_pickle(user_to_items, "data/user_to_items_inf.pkl")
-    to_pickle(top_k, "data/top_k_info.pkl")
+    to_pickle(item_to_users, ITEM_TO_USERS_FILE_NAME )
+    to_pickle(user_to_items, USER_TO_ITEMS_FILE_NAME)
+    to_pickle(top_k, TOP_K_FILE_NAME)
 
 if __name__ == "__main__":
     main()   

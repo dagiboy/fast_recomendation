@@ -1,8 +1,10 @@
-import json
-
 from flask import Flask, request, jsonify
 import pickle
 from collections import defaultdict
+
+from process_data import (get_sim, TOP_K_FILE_NAME, 
+                           ITEM_TO_USERS_FILE_NAME, 
+                           USER_TO_ITEMS_FILE_NAME)
 
 app = Flask(__name__, static_url_path="")
 
@@ -10,24 +12,16 @@ def load_from_pickle(file_name: str):
     with open(file_name, 'rb') as f:
         return pickle.load(f)
 
-item_to_users: dict[int, set[int]] = load_from_pickle("data/item_to_users_inf.pkl")
+item_to_users: dict[int, set[int]] = load_from_pickle(ITEM_TO_USERS_FILE_NAME)
 items = list(item_to_users.keys())
 print("Max item:", max(items))
 
-user_to_items: dict[int, set[int]] = load_from_pickle("data/user_to_items_inf.pkl")
+user_to_items: dict[int, set[int]] = load_from_pickle(USER_TO_ITEMS_FILE_NAME)
 user_to_items = defaultdict(set, user_to_items)
 users = list(user_to_items.keys())
 print("Max user:", max(users))
 
-top_k = load_from_pickle("data/top_k_info.pkl")
-
-def get_sim(item1: int, item2: int, item_to_users: dict[int, set[int]]) -> float:
-    intersection = item_to_users[item1].intersection(item_to_users[item2])
-    if len(intersection) == 0:
-        return 0
-    
-    union = item_to_users[item1].union(item_to_users[item2])
-    return len(intersection) / len(union)
+top_k = load_from_pickle(TOP_K_FILE_NAME)
 
 
 @app.route("/recommend", methods=['GET'])
